@@ -6,8 +6,8 @@ description      'Manages SELinux policy components'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version          '1.1.1'
 
-issues_url 'https://github.com/BackSlasher/chef-selinuxpolicy/issues'
-source_url 'https://github.com/BackSlasher/chef-selinuxpolicy'
+issues_url 'https://github.com/BackSlasher/chef-selinuxpolicy/issues' if respond_to?(:chef_version)
+source_url 'https://github.com/BackSlasher/chef-selinuxpolicy' if respond_to?(:chef_version)
 
 attribute 'selinux_policy',
           display_name: 'SELinux Policy',
@@ -20,4 +20,4 @@ supports 'fedora'
 supports 'ubuntu'
 supports 'debian'
 
-depends 'yum', '~> 4.0'
+#depends 'yum', '~> 4.0'
