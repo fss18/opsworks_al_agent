@@ -25,6 +25,7 @@ when 'rhel'
   end
 when 'fedora'
   pkgs = ['policycoreutils-python', 'selinux-policy-devel', 'setools-console', 'make']
+  include_recipe 'yum::dnf_yum_compat'
 else
   raise 'Unknown distro, cannot determine required package names'
 end
