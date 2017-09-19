@@ -1,8 +1,8 @@
 #
-# Cookbook:: rsyslog
+# Cookbook Name:: rsyslog
 # Recipe:: default
 #
-# Copyright:: 2009-2017, Chef Software, Inc.
+# Copyright 2009-2015, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,12 +17,14 @@
 # limitations under the License.
 #
 
-package node['rsyslog']['package_name']
-package "#{node['rsyslog']['package_name']}-relp" if node['rsyslog']['use_relp']
+extend RsyslogCookbook::Helpers
+
+package 'rsyslog'
+package 'rsyslog-relp' if node['rsyslog']['use_relp']
 
 if node['rsyslog']['enable_tls'] && node['rsyslog']['tls_ca_file']
-  raise "Recipe rsyslog::default can not use 'enable_tls' with protocol '#{node['rsyslog']['protocol']}' (requires 'tcp')" unless node['rsyslog']['protocol'] == 'tcp'
-  package "#{node['rsyslog']['package_name']}-gnutls"
+  Chef::Application.fatal!("Recipe rsyslog::default can not use 'enable_tls' with protocol '#{node['rsyslog']['protocol']}' (requires 'tcp')") unless node['rsyslog']['protocol'] == 'tcp'
+  package 'rsyslog-gnutls'
 end
 
 directory "#{node['rsyslog']['config_prefix']}/rsyslog.d" do
@@ -37,28 +39,21 @@ directory node['rsyslog']['working_dir'] do
   mode  '0700'
 end
 
-execute 'validate_config' do
-  command "rsyslogd -N 1 -f #{node['rsyslog']['config_prefix']}/rsyslog.conf"
-  action  :nothing
-end
-
 # Our main stub which then does its own rsyslog-specific
 # include of things in /etc/rsyslog.d/*
 template "#{node['rsyslog']['config_prefix']}/rsyslog.conf" do
   source  'rsyslog.conf.erb'
-  owner   node['rsyslog']['config_files']['owner']
-  group   node['rsyslog']['config_files']['group']
-  mode    node['rsyslog']['config_files']['mode']
-  notifies :run, 'execute[validate_config]'
+  owner   'root'
+  group   'root'
+  mode    '0644'
   notifies :restart, "service[#{node['rsyslog']['service_name']}]"
 end
 
 template "#{node['rsyslog']['config_prefix']}/rsyslog.d/50-default.conf" do
   source  '50-default.conf.erb'
-  owner   node['rsyslog']['config_files']['owner']
-  group   node['rsyslog']['config_files']['group']
-  mode    node['rsyslog']['config_files']['mode']
-  notifies :run, 'execute[validate_config]'
+  owner   'root'
+  group   'root'
+  mode    '0644'
   notifies :restart, "service[#{node['rsyslog']['service_name']}]"
 end
 
@@ -91,7 +86,4 @@ if platform_family?('omnios')
   end
 end
 
-service node['rsyslog']['service_name'] do
-  supports restart: true, status: true
-  action [:enable, :start]
-end
+declare_rsyslog_service

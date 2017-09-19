@@ -1,14 +1,31 @@
-# rubocop todo
-#
-
-Lint/AmbiguousRegexpLiteral:
+AllCops:
   Exclude:
-    - 'test/integration/input_file_provider/serverspec/input_file_provider_spec.rb'
-    - 'test/integration/relp/serverspec/relp_spec.rb'
+    - vendor/**/*
+    - Guardfile
 
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles, AllowInnerSlashes.
-# SupportedStyles: slashes, percent_r, mixed
-Style/RegexpLiteral:
-  Exclude:
-    - 'test/integration/input_file_provider/serverspec/input_file_provider_spec.rb'
+AlignParameters:
+  Enabled: false
+ClassLength:
+  Enabled: false
+CyclomaticComplexity:
+  Enabled: false
+Documentation:
+  Enabled: false
+Encoding:
+  Enabled: false
+Style/FileName:
+  Enabled: false
+LineLength:
+  Enabled: false
+MethodLength:
+  Enabled: false
+Metrics/AbcSize:
+  Enabled: false
+PerceivedComplexity:
+  Enabled: false
+SingleSpaceBeforeFirstArg:
+  Enabled: false
+Style/ClassAndModuleChildren:
+  Enabled: false
+Style/FileName:
+  Enabled: false

@@ -1,8 +1,8 @@
 #
-# Cookbook:: rsyslog
+# Cookbook Name:: rsyslog
 # Recipe:: server
 #
-# Copyright:: 2009-2017, Chef Software, Inc.
+# Copyright 2009-2015, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@
 #
 
 # Manually set this attribute
-node.normal['rsyslog']['server'] = true
+node.set['rsyslog']['server'] = true
 
 include_recipe 'rsyslog::default'
 
@@ -31,17 +31,14 @@ end
 
 template "#{node['rsyslog']['config_prefix']}/rsyslog.d/35-server-per-host.conf" do
   source   '35-server-per-host.conf.erb'
-  owner    node['rsyslog']['config_files']['owner']
-  group    node['rsyslog']['config_files']['group']
-  mode     node['rsyslog']['config_files']['mode']
-  notifies :run, 'execute[validate_config]'
+  owner    'root'
+  group    'root'
+  mode     '0644'
   notifies :restart, "service[#{node['rsyslog']['service_name']}]"
 end
 
-# if we're a server we shouldn't be sending logs to a remote like a client
-file "#{node['rsyslog']['config_prefix']}/rsyslog.d/49-remote.conf" do
+file "#{node['rsyslog']['config_prefix']}/rsyslog.d/remote.conf" do
   action   :delete
-  notifies :run, 'execute[validate_config]'
   notifies :restart, "service[#{node['rsyslog']['service_name']}]"
-  only_if  { ::File.exist?("#{node['rsyslog']['config_prefix']}/rsyslog.d/49-remote.conf") }
+  only_if  { ::File.exist?("#{node['rsyslog']['config_prefix']}/rsyslog.d/remote.conf") }
 end

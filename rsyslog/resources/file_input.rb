@@ -1,7 +1,7 @@
-# Cookbook:: rsyslog
+# Cookbook Name:: rsyslog
 # Resource:: file_input
 #
-# Copyright:: 2012-2017, Joseph Holsten
+# Copyright 2012-2015, Joseph Holsten
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,32 +16,13 @@
 # limitations under the License.
 #
 
-property :name, String, name_attribute: true, required: true
-property :file, String, required: true
-property :priority, Integer, default: 99
-property :severity, String
-property :facility, String
-property :cookbook_source, String, default: 'rsyslog'
-property :template_source, String, default: 'file-input.conf.erb'
+actions :create
+default_action :create
 
-action :create do
-  log_name = new_resource.name
-  template "/etc/rsyslog.d/#{new_resource.priority}-#{new_resource.name}.conf" do
-    mode '0664'
-    owner node['rsyslog']['user']
-    group node['rsyslog']['group']
-    source new_resource.template_source
-    cookbook new_resource.cookbook_source
-    variables 'file_name' => new_resource.file,
-              'tag' => log_name,
-              'state_file' => log_name,
-              'severity' => new_resource.severity,
-              'facility' => new_resource.facility
-    notifies :restart, "service[#{node['rsyslog']['service_name']}]", :delayed
-  end
-
-  service node['rsyslog']['service_name'] do
-    supports restart: true, status: true
-    action [:enable, :start]
-  end
-end
+attribute :name, kind_of: String, name_attribute: true, required: true
+attribute :file, kind_of: String, required: true
+attribute :priority, kind_of: Integer, default: 99
+attribute :severity, kind_of: String
+attribute :facility, kind_of: String
+attribute :cookbook, kind_of: String, default: 'rsyslog'
+attribute :source, kind_of: String, default: 'file-input.conf.erb'

@@ -3,7 +3,7 @@
 # Library:: default
 #
 # Author:: Sean OMeara <someara@chef.io>
-# Copyright 2012-2013, Sous Chefs
+# Copyright 2012-2013, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,15 +18,12 @@
 # limitations under the License.
 #
 
-module Line
-  module Helper
-    def escape_string(string)
-      pattern = %r{(\+|\'|\"|\.|\*|\/|\-|\\|\(|\)|\{|\}|\^|\$|\[|\])}
-      string.gsub(pattern) { |match| '\\' + match }
-    end
+def escape_string(string)
+  pattern = /(\+|\'|\"|\.|\*|\/|\-|\\|\(|\)|\{|\}|\^|\$|\[|\])/
+  string.gsub(pattern) { |match| '\\' + match }
+end
 
-    def escape_regex(string)
-      escape_string(string)
-    end
-  end
+def escape_regex(string)
+  pattern = /(\+|\'|\"|\.|\*|\/|\-|\\|\(|\)|\{|\}|\^|\$|\[|\])/
+  string.gsub(pattern) { |match| '\\' + match }
 end
